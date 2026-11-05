@@ -1,0 +1,53 @@
+{
+    "version": "2.0.0",
+    "options": {
+        "env": {
+            "PATH": "C:\\msys64\\ucrt64\\bin;C:\\msys64\\usr\\bin;${env:PATH}"
+        }
+    },
+    "tasks": [
+        {
+            "label": "1 Build all programs",
+            "type": "shell",
+            "command": "cobc -x -I src/copy -o bin/INTAKE src/INTAKE.cbl; cobc -x -I src/copy -o bin/UPDATE src/UPDATE.cbl; cobc -x -I src/copy -o bin/REPORTS src/REPORTS.cbl; Write-Host 'BUILD DONE'",
+            "group": { "kind": "build", "isDefault": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "2 Run INTAKE",
+            "type": "shell",
+            "command": "bin/INTAKE; Write-Host \"INTAKE RC=$LASTEXITCODE\"",
+            "problemMatcher": []
+        },
+        {
+            "label": "3 Run UPDATE",
+            "type": "shell",
+            "command": "bin/UPDATE; Write-Host \"UPDATE RC=$LASTEXITCODE\"",
+            "problemMatcher": []
+        },
+        {
+            "label": "4 Run REPORTS",
+            "type": "shell",
+            "command": "bin/REPORTS; Write-Host \"REPORTS RC=$LASTEXITCODE\"",
+            "problemMatcher": []
+        },
+        {
+            "label": "5 Run full pipeline",
+            "type": "shell",
+            "command": "powershell -ExecutionPolicy Bypass -File tools/run-pipeline.ps1",
+            "problemMatcher": []
+        },
+        {
+            "label": "6 Show all outputs",
+            "type": "shell",
+            "command": "Get-ChildItem out/*.DAT, out/*.RPT | ForEach-Object { Write-Host \"===== $($_.Name) =====\"; Get-Content $_.FullName }",
+            "problemMatcher": []
+        },
+        {
+            "label": "7 Check all 8 test days",
+            "type": "shell",
+            "command": "sh tools/check-all.sh",
+            "problemMatcher": []
+        }
+    ]
+}
